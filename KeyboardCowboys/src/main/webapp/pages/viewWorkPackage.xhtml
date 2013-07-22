@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- Author: Kelton Kowalchuk -->
+
+<h:head />
+<body>
+	<ui:composition>
+		<f:event listener="#{WorkPackageController.startConversation()}" type="preRenderView" />
+		<p:panelGrid styleClass="createEmployee">
+			<f:facet name="header">
+						WorkPackage ID:    #{WorkPackageController.workPackage.wpID}
+    				</f:facet>
+			<p:row>
+
+				<p:column>
+					<h:outputLabel for="wpEngineer" value="Engineer:" />
+					<p:message for="wpEngineer" id="msgWpEng" />
+				</p:column>
+				<p:column>
+					<p:selectOneMenu
+						value="#{WorkPackageController.workPackage.wpResEngineer}"
+						id="wpEngineer" styleClass="input-width"
+						converter="#{EmployeeConverter}"
+						rendered="#{WorkPackageController.editing}">
+						<f:selectItem itemLabel="--SELECT ENGINEER--" itemValue="" />
+						<f:selectItems
+							value="#{WorkPackageController.workPackage.wpProject.projEmployeesList}"
+							var="en" itemLabel="#{en.empFName} #{en.empLName}"
+							itemValue="#{en}" />
+					</p:selectOneMenu>
+					<h:outputText rendered="#{not WorkPackageController.editing}"
+						value="#{WorkPackageController.workPackage.wpResEngineer.empFName} #{WorkPackageController.workPackage.wpResEngineer.empLName}" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel for="wpName" value="WP Name:" />
+					<p:message for="wpName" id="msgWpName" />
+				</p:column>
+				<p:column>
+					<p:inputText id="wpName"
+						value="#{WorkPackageController.workPackage.wpName}"
+						styleClass="input-width" label="WorkPackage Name"
+						rendered="#{WorkPackageController.editing}">
+
+						<f:validator validatorId="workPackageNameValidator" />
+
+					</p:inputText>
+					<h:outputText rendered="#{not WorkPackageController.editing}"
+						value="#{WorkPackageController.workPackage.wpName}" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel for="wpStartDate" value="WP Start Date:" />
+					<p:message for="wpStartDate" id="msgWpSDate" />
+				</p:column>
+				<p:column>
+					<p:calendar
+						value="#{WorkPackageController.workPackage.wpStartDate}"
+						id="wpStartDate" styleClass="input-width"
+						rendered="#{WorkPackageController.editing}"
+						binding="#{startDateComponent}" pattern="dd/MM/yyyy" />
+					<h:outputLabel rendered="#{not WorkPackageController.editing}"
+						value="#{WorkPackageController.workPackage.wpStartDate}" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel for="wpEndDate" value="WP End Date:" />
+					<p:message for="wpEndDate" id="msgWpEDate" />
+				</p:column>
+				<p:column>
+					<p:calendar value="#{WorkPackageController.workPackage.wpEndDate}"
+						rendered="#{WorkPackageController.editing}" id="wpEndDate"
+						styleClass="input-width" pattern="dd/MM/yyyy">
+
+						<f:attribute name="startDate" value="#{startDateComponent.value}" />
+						<f:validator validatorId="projectDateValidator" />
+
+					</p:calendar>
+					<h:outputLabel rendered="#{not WorkPackageController.editing}"
+						value="#{WorkPackageController.workPackage.wpEndDate}" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column colspan="2">
+					<p:dataTable var="budgets"
+						value="#{WorkPackageController.workPackage.wpBudgets}"
+						id="wpBudgetTable" editable="true" styleClass="ui-menubar">
+						<p:column headerText="Pay Level">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{budgets.payLevel.plLevel}" />
+								</f:facet>
+								<f:facet name="input">
+									<h:outputText value="#{budgets.payLevel.plLevel}" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Days">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{budgets.days}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{budgets.days}" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column style="width:6%;">
+							<p:rowEditor />
+						</p:column>
+					</p:dataTable>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<p:fieldset id="onProj" legend="Available Employees"
+						rendered="#{WorkPackageController.editing}">
+						<p:outputPanel id="deleteArea">
+							<p:dataGrid id="allEmployees" var="emp" columns="1"
+								value="#{WorkPackageController.workPackage.wpProject.projEmployeesList}">
+								<p:column>
+									<p:panel id="pnl" style="text-align:center">
+
+										<h:outputText value="#{emp.empFName} #{emp.empLName}"
+											id="empFullName" />
+
+									</p:panel>
+									<p:draggable for="pnl" revert="true"
+										handle=".ui-panel-titlebar" stack=".ui-panel" cursor="move"
+										rendered="#{WorkPackageController.editing}" />
+								</p:column>
+							</p:dataGrid>
+						</p:outputPanel>
+					</p:fieldset>
+
+					<p:droppable for="onProj" tolerance="touch" datasource="empOn"
+						rendered="#{WorkPackageController.editing}">
+						<p:ajax listener="#{WorkPackageController.onEmployeeDelete}"
+							update="dropArea allEmployees" />
+					</p:droppable>
+				</p:column>
+				<p:column>
+					<p:fieldset id="selectedEmployees" legend="On Work Package">
+						<p:outputPanel id="dropArea">
+							<h:outputText value="Drag here"
+								rendered="#{empty WorkPackageController.workPackage.wpEmployees} AND #{WorkPackageController.editing}"
+								style="font-size:24px;" />
+							<p:dataGrid var="wpEmp" columns="1" id="empOn"
+								value="#{WorkPackageController.workPackage.wpEmployees}">
+								<p:column>
+									<p:panel id="pnl2" style="text-align:center">
+										<h:outputText value="#{wpEmp.empFName} #{wpEmp.empLName}" />
+									</p:panel>
+									<p:draggable for="pnl2" revert="true"
+										rendered="#{WorkPackageController.editing}"
+										handle=".ui-panel-titlebar" stack=".ui-panel" cursor="move" />
+								</p:column>
+							</p:dataGrid>
+						</p:outputPanel>
+					</p:fieldset>
+					<p:droppable for="selectedEmployees" tolerance="touch"
+						datasource="allEmployees"
+						rendered="#{WorkPackageController.editing}">
+						<p:ajax listener="#{WorkPackageController.onEmployeeDrop}"
+							update="dropArea allEmployees" />
+					</p:droppable>
+				</p:column>
+			</p:row>
+
+			<f:facet name="footer">
+				<p:row>
+					<p:column colspan="2">
+						<p:commandButton
+							action="#{WorkPackageController.mergeWorkPackage()}"
+							id="btnSaveWP" value="Save" icon="ui-icon-plus"
+							style="float: right;" update=":viewProjects:wpDetail"
+							disabled="#{!WorkPackageController.editing}" />
+						<p:commandButton
+							action="#{WorkPackageController.setEditing(true)}" value="Edit"
+							id="btnEditWP" icon="ui-icon-plus" style="float: right;"
+							update=":viewProjects:wpDetail"
+							disabled="#{WorkPackageController.editing}" />
+					</p:column>
+				</p:row>
+			</f:facet>
+		</p:panelGrid>
+	</ui:composition>
+</body>
+</html>

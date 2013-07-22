@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="leftColumnContent">
+		<f:event listener="#{ProjectController.startConversation()}"
+			type="preRenderView" />
+		<h:form id="formCreateProj">
+			<p:panelGrid columns="2" styleClass="createEmployee">
+				<f:facet name="header">
+						Create Project
+    				</f:facet>
+
+				<h:outputLabel for="projID" value="Project ID:" />
+				<p:inputText id="projID" value="#{ProjectController.project.projID}"
+					styleClass="input-width" required="true" label="Project ID">
+					
+					<f:validator validatorId="projectIDValidator" />
+				
+				</p:inputText>
+
+				<h:outputLabel for="projName" value="Project Name:" />
+				<p:inputText id="projName"
+					value="#{ProjectController.project.projName}"
+					styleClass="input-width" required="true" label="Project Name">
+					
+					<f:validator validatorId="projectNameValidator" />
+					
+				</p:inputText>
+
+				<h:outputLabel for="projCostEstimate" value="Cost Estimate:" />
+				<p:inputText id="projCostEstimate"
+					value="#{ProjectController.project.projCostEstimate}"
+					styleClass="input-width" required="true" label="Project Name">
+					
+					<f:validator validatorId="costEstimateValidator" />
+					
+				</p:inputText>
+
+				<h:outputLabel for="projStartDate" value="Project Start Date:" />
+				<p:calendar value="#{ProjectController.project.projStartDate}"
+					id="projStartDate" styleClass="input-width" binding="#{startDateComponent}" pattern="dd/MM/yyyy">
+					
+					<!-- 
+					<f:validator validatorId="projectDateFormatValidator" />
+					-->
+				</p:calendar>
+
+				<h:outputLabel for="projEndDate" value="Project End Date:" />
+				<p:calendar value="#{ProjectController.project.projEndDate}"
+					id="projEndDate" styleClass="input-width" pattern="dd/MM/yyyy">
+					
+					<f:attribute name="startDate" value="#{startDateComponent.value}" />
+   					<f:validator validatorId="projectDateValidator" />
+					
+				</p:calendar>
+
+				<h:outputLabel for="projDescription" value="Project Description:" />
+				<p:inputTextarea id="projDescription"
+					value="#{ProjectController.project.projDescription}"
+					required="true" label="Project Description" rows="6" cols="33">
+					
+					<f:validator validatorId="projectDescriptionValidator" />
+					
+				</p:inputTextarea>
+
+				<f:facet name="footer">
+					<p:commandButton action="#{ProjectController.saveProject()}"
+						id="btnSaveProj" value="Create" icon="ui-icon-plus"
+						style="float: right;" rendered="#{!ProjectController.submitted}" update="@form"/>
+				</f:facet>
+			</p:panelGrid>
+			<div class="messages">
+				<p:messages id="messages" showDetail="true" autoUpdate="true" />
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

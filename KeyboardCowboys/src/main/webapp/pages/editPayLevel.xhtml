@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<h:form id="formEditPayLevel">
+			<div>
+				<p:panelGrid columns="1" style="margin-left:auto;margin-right:auto;text-align:center;">
+					<h3>Edit Pay Levels</h3>
+					<p:dataTable var="budgets"
+						value=""
+						id="plTable" editable="true" styleClass="ui-menubar">
+						<p:column headerText="Pay Level">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="" />
+								</f:facet>
+								<f:facet name="input">
+									<p:outputLabel value="" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Days">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column style="width:6%;">
+							<p:rowEditor />
+						</p:column>
+					</p:dataTable>
+				</p:panelGrid>
+			</div>
+			<p:message for="formEditPayLevel" />
+		</h:form>
+	</ui:define>
+</ui:composition>

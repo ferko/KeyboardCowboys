@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- Author: Kelton Kowalchuk -->
+
+<h:head>
+	<title>Keyboard Cowboys - Login</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<h:outputStylesheet name="css/style.css" />
+</h:head>
+<h:body>
+	<!-- style="background-image: url(#{request.contextPath}/resources/gfx/grey_stripes.png);" -->
+	<f:event listener="#{login.loggedIn}" type="preRenderView" />
+	<div class="container">
+		<h:form id="login_form">
+			<div>
+				<p:panelGrid columns="2" styleClass="login">
+					<f:facet name="header">
+						<h:graphicImage class="logo"
+							url="/resources/gfx/keyboardcowboyslogo.png" />
+						<br />Keyboard Cowboys 
+    			</f:facet>
+
+					<h:outputLabel for="username" value="Username:" />
+					<p:inputText id="username" value="#{login.userName}"
+						required="true" label="Username" />
+
+					<h:outputLabel for="password" value="Password:" />
+					<p:password id="password" value="#{login.password}" required="true"
+						label="Password" />
+					<f:facet name="footer">
+						<p:commandButton id="login_button" action="#{login.login}"
+							value="Login" icon="ui-icon-check" style="float: right;"
+							update="@form" />
+					</f:facet>
+				</p:panelGrid>
+				<div class="messages" >
+				<p:messages id="messages" />
+				</div>
+			</div>
+		</h:form>
+	</div>
+</h:body>
+</html>

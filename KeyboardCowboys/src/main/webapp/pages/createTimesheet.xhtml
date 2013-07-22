@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<f:event listener="#{TimeSheetController.startConversation()}"
+			type="preRenderView" />
+		<h:form id="formTSdateSelect">
+			<p:panelGrid columns="2"
+				rendered="#{empty TimeSheetController.timeSheet}">
+				<p:outputLabel value="Date Select:" />
+				<p:calendar id="calTSdate" showWeek="true"
+					value="#{TimeSheetController.tsDate}">
+					<p:ajax event="dateSelect"
+						update=":formCreateTmSh, :formTSdateSelect" immediate="true" />
+				</p:calendar>
+			</p:panelGrid>
+		</h:form>
+		<h:form id="formCreateTmSh">
+			<p:panelGrid columns="4"
+				rendered="#{not empty TimeSheetController.timeSheet}">
+				<p:outputLabel
+					value="Employee ID: #{TimeSheetController.currentEmp.empID}" />
+				<p:outputLabel value="Week Number: " />
+				<p:outputLabel
+					value="Week Ending: #{TimeSheetController.timeSheet.tsWeekEnding}" />
+				<p:outputLabel
+					value="Name: #{TimeSheetController.currentEmp.empFName} #{TimeSheetController.currentEmp.empLName}" />
+			</p:panelGrid>
+			<p:dataTable var="timeRows"
+				value="#{TimeSheetController.timeSheet.tsTimeRows}"
+				id="timesheetTable" editable="true" styleClass="ui-menubar"
+				rendered="#{not empty TimeSheetController.timeSheet}"
+				rowKey="#{timeRows.trID}">
+				<p:ajax event="rowEdit"
+					update=":formCreateTmSh:timesheetTable:colTotals" immediate="true" />
+				<p:ajax event="rowEditCancel"
+					update=":formCreateTmSh:timesheetTable:colTotals" immediate="true" />
+				<p:column headerText="Project">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trProject.projID}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{timeRows.trProject.projID}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="WP">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trWorkPackage.wpID}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{timeRows.trWorkPackage.wpID}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Total" style="width:5%;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.total}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{timeRows.total}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Sat" style="width:5%;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trSat}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								disabled="#{TimeSheetController.timeSheet.status == 'Submitted' or
+							 	TimeSheetController.timeSheet.status == 'Approved'}"
+								value="#{timeRows.trSat}" immediate="true">
+								<f:validator validatorId="timesheetHoursValidator" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Sun" style="width:5%;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trSun}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								disabled="#{TimeSheetController.timeSheet.status == 'Submitted' or
+							 	TimeSheetController.timeSheet.status == 'Approved'}"
+								value="#{timeRows.trSun}" immediate="true">
+								<f:validator validatorId="timesheetHoursValidator" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Mon" style="width:5%;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trMon}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								disabled="#{TimeSheetController.timeSheet.status == 'Submitted' or
+							 	TimeSheetController.timeSheet.status == 'Approved'}"
+								value="#{timeRows.trMon}" immediate="true">
+								<f:validator validatorId="timesheetHoursValidator" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Tue" style="width:5%;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trTue}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								disabled="#{TimeSheetController.timeSheet.status == 'Submitted' or
+							 	TimeSheetController.timeSheet.status == 'Approved'}"
+								value="#{timeRows.trTue}" immediate="true">
+								<f:validator validatorId="timesheetHoursValidator" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Wed" style="width:5%;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trWed}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								disabled="#{TimeSheetController.timeSheet.status == 'Submitted' or
+							 	TimeSheetController.timeSheet.status == 'Approved'}"
+								value="#{timeRows.trWed}" immediate="true">
+								<f:validator validatorId="timesheetHoursValidator" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Thu" style="width:5%;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trThu}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								disabled="#{TimeSheetController.timeSheet.status == 'Submitted' or
+							 	TimeSheetController.timeSheet.status == 'Approved'}"
+								value="#{timeRows.trThu}" immediate="true">
+								<f:validator validatorId="timesheetHoursValidator" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Fri" style="width:5%;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trFri}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								disabled="#{TimeSheetController.timeSheet.status == 'Submitted' or
+							 	TimeSheetController.timeSheet.status == 'Approved'}"
+								value="#{timeRows.trFri}" immediate="true">
+								<f:validator validatorId="timesheetHoursValidator" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Notes">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{timeRows.trNotes}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								disabled="#{TimeSheetController.timeSheet.status == 'Submitted' or
+							 	TimeSheetController.timeSheet.status == 'Approved'}"
+								value="#{timeRows.trNotes}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:6%;">
+					<p:rowEditor />
+				</p:column>
+				<p:columnGroup type="footer">
+					<p:row>
+						<p:column colspan="2" style="text-align:right">  
+             		   		Total:  
+            			</p:column>
+						<p:column>
+							<h:outputText value="#{TimeSheetController.timeSheet.getTotal()}" />
+						</p:column>
+						<p:column>
+							<h:outputText
+								value="#{TimeSheetController.timeSheet.getTotalForDay(0)}" />
+						</p:column>
+						<p:column>
+							<h:outputText
+								value="#{TimeSheetController.timeSheet.getTotalForDay(1)}" />
+						</p:column>
+						<p:column>
+							<h:outputText
+								value="#{TimeSheetController.timeSheet.getTotalForDay(2)}" />
+						</p:column>
+						<p:column>
+							<h:outputText
+								value="#{TimeSheetController.timeSheet.getTotalForDay(3)}" />
+						</p:column>
+						<p:column>
+							<h:outputText
+								value="#{TimeSheetController.timeSheet.getTotalForDay(4)}" />
+						</p:column>
+						<p:column>
+							<h:outputText
+								value="#{TimeSheetController.timeSheet.getTotalForDay(5)}" />
+						</p:column>
+						<p:column>
+							<h:outputText id="colTotals"
+								value="#{TimeSheetController.timeSheet.getTotalForDay(6)}" />
+						</p:column>
+						<p:column colspan="2">
+						</p:column>
+					</p:row>
+				</p:columnGroup>
+			</p:dataTable>
+			<p:panelGrid columns="4"
+				rendered="#{not empty TimeSheetController.timeSheet}">
+				<p:outputLabel value="OverTime: " />
+				<p:inputText value="#{TimeSheetController.timeSheet.epiOvertime}" />
+				<p:outputLabel value="Signed: " />
+				<p:outputLabel value="N/A" />
+
+				<p:outputLabel value="FlexTime: " />
+				<p:inputText value="#{TimeSheetController.timeSheet.epiFlex}" />
+				<p:outputLabel value="Approved: " />
+				<p:outputLabel value="#{TimeSheetController.timeSheet.status}" />
+			</p:panelGrid>
+			<p:panelGrid
+				rendered="#{(not empty TimeSheetController.timeSheet) and (TimeSheetController.timeSheet.status == 'Rejected')}" columns="1">
+				<p:outputLabel for="iptaApproveNotes" value="Approval Notes:" />
+				<p:inputTextarea id="iptaApproveNotes" label="Approval Notes"
+					value="#{TimeSheetController.timeSheet.approvalNotes}"
+					rows="6" cols="100" readonly="true"/>
+			</p:panelGrid>
+			<p:panelGrid
+				rendered="#{not empty TimeSheetController.timeSheet or TimeSheetController.timeSheet.status != 'Approved'}"
+				columns="2">
+				<p:commandButton value="Save" id="btnSaveTS"
+					rendered="#{TimeSheetController.timeSheet.status == 'Not Saved' and !TimeSheetController.submitted}"
+					action="#{TimeSheetController.saveTimeSheet()}" update="@all" />
+
+				<p:commandButton value="Update" id="btnUpdateTS"
+					action="#{TimeSheetController.mergeTimeSheet()}"
+					rendered="#{TimeSheetController.timeSheet.status == 'Saved' and !TimeSheetController.submitted}"
+					update="@all" />
+
+				<p:commandButton value="Submit" id="btnSubmitTS"
+					action="#{TimeSheetController.submitTimeSheet()}"
+					rendered="#{(TimeSheetController.timeSheet.status == 'Saved' or TimeSheetController.timeSheet.status == 'Rejected') and !TimeSheetController.submitted}"
+					update="@all" />
+			</p:panelGrid>
+			<p:messages />
+		</h:form>
+	</ui:define>
+</ui:composition>

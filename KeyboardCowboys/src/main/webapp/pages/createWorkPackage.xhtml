@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<f:event listener="#{WorkPackageController.startConversation()}"
+			type="preRenderView" />
+		<h:form id="formCreateWP">
+			<div style="margin-left: auto;margin-right: auto;width: 613px;">
+				<p:panelGrid style="margin-right:auto;float:left;">
+					<f:facet name="header">
+							Create WorkPackage
+	    				</f:facet>
+					<p:row>
+						<p:column>
+							<h:outputLabel for="wpProj" value="WP Project:" />
+							<p:message for="wpProj" id="msgWpProj"
+								rendered="#{not empty WorkPackageController.workPackage.wpProject}" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu
+								value="#{WorkPackageController.workPackage.wpProject}"
+								id="wpProj" styleClass="input-width"
+								converter="#{ProjectConverter}">
+								<f:selectItem itemLabel="--SELECT PROJECT--" itemValue="" />
+								<f:selectItems value="#{WorkPackageController.allProjects}"
+									var="projs" itemLabel="#{projs.projName} #{projs.projID}"
+									itemValue="#{projs}" />
+								<f:ajax render="@form" immediate="true" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row
+						rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+						<p:column
+							rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+							<h:outputLabel for="wpWorkPackages" value="Parent Work Package:" />
+							<p:message for="wpWorkPackages" id="msgWpParent" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu
+								value="#{WorkPackageController.workPackage.wpPackage}"
+								id="wpWorkPackages" styleClass="input-width"
+								converter="#{WorkPackageConverter}" >
+								<f:selectItem itemLabel="--SELECT PARENT--" itemValue="" />
+								<f:selectItems
+									value="#{WorkPackageController.workPackage.wpProject.workPackagesList}"
+									var="wp" itemLabel="#{wp.wpName}" itemValue="#{wp}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row
+						rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+						<p:column
+							rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+							<h:outputLabel for="wpEngineer" value="Engineer:" />
+							<p:message for="wpEngineer" id="msgWpEng" />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu
+								value="#{WorkPackageController.workPackage.wpResEngineer}"
+								id="wpEngineer" styleClass="input-width"
+								converter="#{EmployeeConverter}">
+								<f:selectItem itemLabel="--SELECT ENGINEER--" itemValue="" />
+								<f:selectItems
+									value="#{WorkPackageController.workPackage.wpProject.projEmployeesList}"
+									var="en" itemLabel="#{en.empFName} #{en.empLName}" itemValue="#{en}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row
+						rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+						<p:column>
+							<h:outputLabel for="wpID" value="WP ID:" />
+							<p:message for="wpID" id="msgWpID" />
+						</p:column>
+						<p:column>
+							<p:inputText id="wpID"
+								value="#{WorkPackageController.workPackage.wpID}"
+								styleClass="input-width" label="WorkPackage ID"
+								rendered="#{not empty WorkPackageController.workPackage.wpProject}"
+								required="true" requiredMessage="WP_ID Cannot be Empty">
+								
+								
+							</p:inputText>
+						</p:column>
+					</p:row>
+					<p:row
+						rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+						<p:column>
+							<h:outputLabel for="wpName" value="WP Name:" />
+							<p:message for="wpName" id="msgWpName" />
+						</p:column>
+						<p:column>
+							<p:inputText id="wpName"
+								value="#{WorkPackageController.workPackage.wpName}"
+								styleClass="input-width" required="true"
+								requiredMessage="WP_NAME Must be Provided"
+								label="WorkPackage Name"
+								rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+								
+								<f:validator validatorId="workPackageNameValidator" />
+								
+							</p:inputText>
+						</p:column>
+					</p:row>
+					<p:row
+						rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+						<p:column>
+							<h:outputLabel for="wpStartDate" value="WP Start Date:" />
+							<p:message for="wpStartDate" id="msgWpSDate" />
+						</p:column>
+						<p:column>
+							<p:calendar
+								value="#{WorkPackageController.workPackage.wpStartDate}"
+								id="wpStartDate" styleClass="input-width" required="true"
+								requiredMessage="Start Date Must be Selected" binding="#{startDateComponent}" pattern="dd/MM/yyyy"/>
+						</p:column>
+					</p:row>
+					<p:row
+						rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+						<p:column>
+							<h:outputLabel for="wpEndDate" value="WP End Date:" />
+							<p:message for="wpEndDate" id="msgWpEDate" />
+						</p:column>
+						<p:column>
+							<p:calendar value="#{WorkPackageController.workPackage.wpEndDate}"
+								required="true" requiredMessage="End Date Must be Selected"
+								id="wpEndDate" styleClass="input-width" pattern="dd/MM/yyyy">
+						
+						<f:attribute name="startDate" value="#{startDateComponent.value}" />
+	   					<f:validator validatorId="projectDateValidator" />
+						
+					</p:calendar>
+						</p:column>
+					</p:row>
+					
+					
+					<p:row
+						rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+						<p:column>
+							<p:fieldset id="onProj" legend="Available Employees">
+								<p:outputPanel id="deleteArea">
+									<p:dataGrid id="allEmployees" var="emp" columns="1"
+										value="#{WorkPackageController.workPackage.wpProject.projEmployeesList}">
+										<p:column>
+											<p:panel id="pnl" style="text-align:center">
+	
+												<h:outputText value="#{emp.empFName} #{emp.empLName}" id="empName" />
+	
+											</p:panel>
+											<p:draggable for="pnl" revert="true"
+												handle=".ui-panel-titlebar" stack=".ui-panel" cursor="move" />
+										</p:column>
+									</p:dataGrid>
+								</p:outputPanel>
+							</p:fieldset>
+							<p:droppable for="onProj" tolerance="touch" datasource="empOn"
+								rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+								<p:ajax listener="#{WorkPackageController.onEmployeeDelete}"
+									update="dropArea allEmployees" />
+							</p:droppable>
+						</p:column>
+						<p:column>
+							<p:fieldset id="selectedEmployees" legend="On Work Package">
+								<p:outputPanel id="dropArea">
+									<h:outputText value="Drag here"
+										rendered="#{empty WorkPackageController.workPackage.wpEmployees}"
+										style="font-size:24px;" />
+									<p:dataGrid var="wpEmp" columns="1" id="empOn"
+										value="#{WorkPackageController.workPackage.wpEmployees}"
+										rendered="#{not empty WorkPackageController.workPackage.wpEmployees}">
+										<p:column>
+											<p:panel id="pnl2" style="text-align:center">
+												<h:outputText value="#{wpEmp.empFName} #{wpEmp.empLName}" />
+											</p:panel>
+											<p:draggable for="pnl2" revert="true"
+												handle=".ui-panel-titlebar" stack=".ui-panel" cursor="move" />
+										</p:column>
+									</p:dataGrid>
+								</p:outputPanel>
+							</p:fieldset>
+							<p:droppable for="selectedEmployees" tolerance="touch"
+								datasource="allEmployees"
+								rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+								<p:ajax listener="#{WorkPackageController.onEmployeeDrop}"
+									update="dropArea allEmployees" />
+							</p:droppable>
+						</p:column>
+					</p:row>
+	
+	
+					<f:facet name="footer">
+						<p:row
+							rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+							<p:column colspan="2">
+								<p:commandButton
+									action="#{WorkPackageController.saveWorkPackage()}"
+									value="Create" id="btnSaveWP" icon="ui-icon-plus"
+									style="float: right;" update="@all"
+									rendered="#{!WorkPackageController.submitted}" />
+							</p:column>
+						</p:row>
+					</f:facet>
+				</p:panelGrid>
+				<p:panelGrid style="margin-right:auto;">
+					<p:row
+						rendered="#{not empty WorkPackageController.workPackage.wpProject}">
+						<p:column colspan="2">
+							<p:dataTable var="budgets"
+								value="#{WorkPackageController.workPackage.wpBudgets}"
+								id="wpBudgetTable" editable="true" styleClass="ui-menubar">
+								<p:column headerText="Pay Level">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{budgets.payLevel.plLevel}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:outputLabel value="#{budgets.payLevel.plLevel}" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column headerText="Days">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{budgets.days}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{budgets.days}" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column style="width:6%;">
+									<p:rowEditor />
+								</p:column>
+							</p:dataTable>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</div>
+			<p:message for="formCreateWP" />
+		</h:form>
+	</ui:define>
+</ui:composition>

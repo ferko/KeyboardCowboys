@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<f:event listener="#{StatusReportController.startConversation()}"
+			type="preRenderView" />
+		<h:form id="formViewStatRpt">
+			<p:panelGrid id="selectWPGrid" columns="2">
+				<p:outputLabel value="Work Package:" />
+				<p:selectOneMenu value="#{StatusReportController.workPackage}"
+					id="srWP" styleClass="input-width" converter="#{srWPconverter}"
+					immediate="true">
+					<f:ajax immediate="true" event="change" render="@form" />
+					<f:selectItem itemLabel="--SELECT WORK PACKAGE--" itemValue="" />
+					<f:selectItems value="#{StatusReportController.workPackages}"
+						var="wp" itemLabel="#{wp.wpName} #{wp.wpID}" itemValue="#{wp}" />
+
+				</p:selectOneMenu>
+				<p:outputLabel value="Date:"
+					rendered="#{StatusReportController.workPackage != null}" />
+				<p:calendar value="#{StatusReportController.reportDate}"
+					rendered="#{StatusReportController.workPackage != null}"
+					id="calStatusReportDate" styleClass="input-width">
+					<p:ajax event="dateSelect" update="@form" immediate="true" />
+				</p:calendar>
+			</p:panelGrid>
+			<p:panelGrid id="containerPanel" columns="1"
+				rendered="#{StatusReportController.reportDate != null}">
+				<p:outputLabel value="Status Report" />
+				<p:panelGrid id="reportInfo">
+					<p:row>
+						<p:column>
+							<p:outputLabel value="WP Name:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel
+								value="#{StatusReportController.statusReport.workPackage.wpName}" />
+						</p:column>
+						<p:column>
+							<p:outputLabel value="Report ID:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel
+								value="#{StatusReportController.statusReport.srId}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel value="WP ID:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel
+								value="#{StatusReportController.statusReport.workPackage.wpID}" />
+						</p:column>
+						<p:column>
+							<p:outputLabel value="Report Date:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel
+								value="#{StatusReportController.statusReport.srDate}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel value="Project Manager:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel
+								value="#{StatusReportController.statusReport.projManager.empFName} #{StatusReportController.statusReport.projManager.empLName}" />
+						</p:column>
+						<p:column>
+							<p:outputLabel value="Reference Date:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel value="N/A" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel value="R. Engineer:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel
+								value="#{StatusReportController.statusReport.wpResEngineer.empFName} #{StatusReportController.statusReport.wpResEngineer.empLName}" />
+						</p:column>
+						<p:column>
+							<p:outputLabel value="WP Week:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel value="N/A" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel value="R. Assistant:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel
+								value="#{StatusReportController.statusReport.wpAssistant.empFName} #{StatusReportController.statusReport.wpAssistant.empLName}" />
+						</p:column>
+						<p:column>
+							<p:outputLabel value="Project Assistant:" />
+						</p:column>
+						<p:column>
+							<p:outputLabel
+								value="#{StatusReportController.statusReport.projAssistant.empFName} #{StatusReportController.statusReport.projAssistant.empLName}" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+
+				<p:outputLabel value="Work Package Budget" />
+
+				<p:dataTable var="wpb"
+					value="#{StatusReportController.statusReport.workPackage.wpBudgets}"
+					id="workPackageBudgetTable" styleClass="ui-menubar">
+
+					<p:column headerText="P-Level" footerText="Total"
+						rendered="#{wpb.days != 0}">
+
+						<h:outputText value="#{wpb.payLevel.plLevel}" />
+
+					</p:column>
+
+					<p:column headerText="BCWS(P-Day)" rendered="#{wpb.days != 0}"
+						footerText="#{StatusReportController.statusReport.workPackage.totalBudgetDays}">
+
+						<h:outputText value="#{wpb.days}" />
+
+					</p:column>
+
+					<p:column headerText="BCWS($)" rendered="#{wpb.days != 0}"
+						footerText="$ #{StatusReportController.statusReport.workPackage.totalBudgetDollers}">
+						<h:outputText value="$ #{wpb.days * wpb.payLevel.plRate}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:dataTable var="wps"
+					value="#{StatusReportController.statusReport.empEstimate}"
+					id="workPackageStatsTable" styleClass="ui-menubar">
+
+					<p:column headerText="Employee" footerText="Total">
+						<h:outputText
+							value="#{wps.employee.empFName} #{wps.employee.empLName}" />
+					</p:column>
+
+					<p:column headerText="Timesheet Submission"
+						footerText="#{StatusReportController.statusReport.totalTimeSheetSubmission}">
+						<h:outputText value="#{wps.timeSheetSubmission}"
+							rendered="#{wps.timeSheetSubmission >= 0}" />
+						<h:outputText value="#{wps.timeSheetSubmission * -1}" style="color:#FF0000"
+							rendered="#{wps.timeSheetSubmission lt 0}" />
+						<h:outputText value="N/A" style="color:#FF0000"
+							rendered="#{wps.timeSheetSubmission == null}" />
+					</p:column>
+
+					<p:column headerText="Actual Cost"
+						footerText="#{StatusReportController.statusReport.totalAC}">
+						<h:outputText value="#{wps.timeSheetSubmission * wps.payWage}"
+							rendered="#{wps.timeSheetSubmission >= 0}" />
+						<h:outputText value="#{wps.timeSheetSubmission * wps.payWage * -1}" style="color:#FF0000"
+							rendered="#{wps.timeSheetSubmission lt 0}" />
+					</p:column>
+
+					<p:column headerText="ETC(days)"
+						footerText="#{StatusReportController.statusReport.totalEst}">
+						<h:inputText value="#{wps.estimate}" disabled="#{StatusReportController.statusReport.status == 'SUBMITTED'}">
+							<p:ajax event="blur"
+								update=":formViewStatRpt:workPackageStatsTable" immediate="true" />
+						</h:inputText>
+					</p:column>
+
+					<p:column headerText="ETC($)"
+						footerText="#{StatusReportController.statusReport.totalEstDollers}">
+						<h:outputText value="$ #{wps.estimate * wps.payWage}" />
+					</p:column>
+
+					<p:column headerText="EAC(days)"
+						footerText="#{StatusReportController.statusReport.totalEstAct}">
+						<h:outputText value="#{wps.eac}"
+							rendered="#{wps.timeSheetSubmission >= 0}" />
+						<h:outputText value="#{wps.estimate}"
+							rendered="#{wps.timeSheetSubmission == null || wps.timeSheetSubmission lt 0}" />
+					</p:column>
+
+					<p:column headerText="EAC($)"
+						footerText="#{StatusReportController.statusReport.totalEstActDol}">
+						<h:outputText
+							value="$ #{wps.eacDol}"
+							rendered="#{wps.timeSheetSubmission >= 0}" />
+						<h:outputText value="$ #{wps.estimate * wps.payWage}"
+							rendered="#{wps.timeSheetSubmission == null || wps.timeSheetSubmission lt 0}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:panelGrid columns="2" id="textAreaPanel">
+					<p:outputLabel value="Work Accomplished This Period" />
+					<p:outputLabel value="Work Planned Next Period" />
+					<p:inputTextarea cols="50"
+						value="#{StatusReportController.statusReport.workAccomplished}" 
+						disabled="#{StatusReportController.statusReport.status == 'SUBMITTED'}" />
+					<p:inputTextarea cols="50"
+						value="#{StatusReportController.statusReport.workPlan}"
+						disabled="#{StatusReportController.statusReport.status == 'SUBMITTED'}" />
+					<p:outputLabel value="Problem This Period" />
+					<p:outputLabel value="Problems Anticipated" />
+					<p:inputTextarea cols="50"
+						value="#{StatusReportController.statusReport.problemForPeriod}"
+						disabled="#{StatusReportController.statusReport.status == 'SUBMITTED'}" />
+					<p:inputTextarea cols="50"
+						value="#{StatusReportController.statusReport.problemAnticipated}"
+						disabled="#{StatusReportController.statusReport.status == 'SUBMITTED'}" />
+				</p:panelGrid>
+
+				<p:outputLabel value="Comments" />
+				<p:inputTextarea cols="100"
+					value="#{StatusReportController.statusReport.comments}"
+					disabled="#{StatusReportController.statusReport.status == 'SUBMITTED'}" />
+
+				<p:outputLabel value="Earn Value:" />
+
+				<p:panelGrid columns="2">
+					<p:commandButton id="btnSave"
+						rendered="#{StatusReportController.statusReport.status == 'SAVED'}"
+						action="#{StatusReportController.updateStatusReport()}" update="@form"
+						value="Update" />
+					<p:commandButton id="btnUpdate"
+						action="#{StatusReportController.saveStatusReport()}" value="Save"
+						rendered="#{StatusReportController.statusReport.status == 'UNSAVED'}" update="@form"/>
+					<p:commandButton id="btnSubmit"
+						rendered="#{StatusReportController.statusReport.status != 'SUBMITTED' and StatusReportController.statusReport.status == 'SAVED'}"
+						action="#{StatusReportController.submitStatusReport()}" update="@form"
+						value="Submit" />
+				</p:panelGrid>
+			</p:panelGrid>
+			<p:message for="formViewStatRpt" />
+		</h:form>
+	</ui:define>
+</ui:composition>

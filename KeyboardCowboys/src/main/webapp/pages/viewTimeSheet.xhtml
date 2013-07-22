@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- Author: Kelton Kowalchuk -->
+
+<h:head />
+<body>
+	<ui:composition>
+			<p:panelGrid columns="4">
+				<p:outputLabel
+					value="Employee ID: #{TimeSheetApprovalController.timeSheetApproval.timeSheet.tsEmp.empID}" />
+				<p:outputLabel value="Week Number: " />
+				<p:outputLabel
+					value="Week Ending: #{TimeSheetApprovalController.timeSheetApproval.timeSheet.tsWeekEnding}" />
+				<p:outputLabel
+					value="Name: #{TimeSheetApprovalController.timeSheetApproval.timeSheet.tsEmp.empFName} #{TimeSheetApprovalController.timeSheetApproval.timeSheet.tsEmp.empLName}" />
+			</p:panelGrid>
+			<p:dataTable var="timeRows"
+				value="#{TimeSheetApprovalController.timeSheetApproval.timeSheet.tsTimeRows}"
+				id="timesheetTable" styleClass="ui-menubar">
+				<p:column headerText="Project">
+					<h:outputText value="#{timeRows.trProject.projID}" />
+				</p:column>
+
+				<p:column headerText="WP">
+					<h:outputText value="#{timeRows.trWorkPackage.wpID}" />
+				</p:column>
+
+				<p:column headerText="Total" style="width:5%;">
+					<h:outputText value="#{timeRows.total}" />
+				</p:column>
+
+				<p:column headerText="Sat" style="width:5%;">
+					<h:outputText value="#{timeRows.trSat}" />
+				</p:column>
+
+				<p:column headerText="Sun" style="width:5%;">
+					<h:outputText value="#{timeRows.trSun}" />
+				</p:column>
+
+				<p:column headerText="Mon" style="width:5%;">
+					<h:outputText value="#{timeRows.trMon}" />
+				</p:column>
+
+				<p:column headerText="Tue" style="width:5%;">
+					<h:outputText value="#{timeRows.trTue}" />
+				</p:column>
+
+				<p:column headerText="Wed" style="width:5%;">
+					<h:outputText value="#{timeRows.trWed}" />
+				</p:column>
+
+				<p:column headerText="Thu" style="width:5%;">
+					<h:outputText value="#{timeRows.trThu}" />
+				</p:column>
+
+				<p:column headerText="Fri" style="width:5%;">
+					<h:outputText value="#{timeRows.trFri}" />
+				</p:column>
+
+				<p:column headerText="Notes">
+					<h:outputText value="#{timeRows.trNotes}" />
+				</p:column>
+
+				<p:columnGroup type="footer">
+					<p:row>
+						<p:column colspan="2" style="text-align:right">  
+             		   		Total:  
+            			</p:column>
+						<p:column>
+							<h:outputText value="n/a" />
+						</p:column>
+						<p:column>
+							<h:outputText value="n/a" />
+						</p:column>
+						<p:column>
+							<h:outputText value="n/a" />
+						</p:column>
+						<p:column>
+							<h:outputText value="n/a" />
+						</p:column>
+						<p:column>
+							<h:outputText value="n/a" />
+						</p:column>
+						<p:column>
+							<h:outputText value="n/a" />
+						</p:column>
+						<p:column>
+							<h:outputText value="n/a" />
+						</p:column>
+						<p:column>
+							<h:outputText value="n/a" />
+						</p:column>
+
+					</p:row>
+				</p:columnGroup>
+			</p:dataTable>
+			<p:panelGrid columns="4">
+				<p:outputLabel value="OverTime: " />
+				<p:outputLabel
+					value="#{TimeSheetApprovalController.timeSheetApproval.timeSheet.epiOvertime}" />
+				<p:outputLabel value="Signed: " />
+				<p:outputLabel value="N/A" />
+
+				<p:outputLabel value="FlexTime: " />
+				<p:outputLabel
+					value="#{TimeSheetApprovalController.timeSheetApproval.timeSheet.epiFlex}" />
+				<p:outputLabel value="Approved: " />
+				<p:outputLabel
+					value="#{TimeSheetApprovalController.timeSheetApproval.timeSheet.status}" />
+			</p:panelGrid>
+			<p:panelGrid columns="2">
+				<p:outputLabel for="iptaApproveNotes" value="Approval Notes:" />
+				<p:inputTextarea id="iptaApproveNotes" label="Approval Notes"
+					value="#{TimeSheetApprovalController.timeSheetApprovalNotes}" rows="6" cols="100" /> 
+			</p:panelGrid>
+			<p:panelGrid columns="2">
+				<p:commandButton
+					action="#{TimeSheetApprovalController.ApproveTimeSheet()}"
+					value="Approve TimeSheet" update="@form" />
+				<p:commandButton
+					action="#{TimeSheetApprovalController.RejectTimeSheet()}"
+					value="Reject TimeSheet" update="@form" />
+			</p:panelGrid>
+			<p:messages />
+	
+	</ui:composition>
+</body>
+</html>

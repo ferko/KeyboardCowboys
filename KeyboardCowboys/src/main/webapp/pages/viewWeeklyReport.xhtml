@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<f:event listener="#{WeeklyReportController.startConversation()}"
+			type="preRenderView" />
+		<h:form id="formViewWeekRpt">
+			<p:panelGrid id="selectWPGrid" columns="2">
+				<p:outputLabel value="Work Package:" />
+				<p:selectOneMenu value="#{WeeklyReportController.project}"
+					id="wrProj" styleClass="input-width" converter="#{WRPConverter}"
+					immediate="true">
+					<f:ajax immediate="true" event="change" render="@form" />
+					<f:selectItem itemLabel="--SELECT PROJECT--" itemValue="" />
+					<f:selectItems value="#{WeeklyReportController.projects}"
+						var="proj" itemLabel="#{proj.projName} #{proj.projID}"
+						itemValue="#{proj}" />
+				</p:selectOneMenu>
+				<p:outputLabel value="Date:"
+					rendered="#{WeeklyReportController.project != null}" />
+				<p:calendar value="#{WeeklyReportController.date}"
+					rendered="#{WeeklyReportController.project != null}"
+					id="calWeeklyReportDate" styleClass="input-width"
+					pattern="yyyy-MM-dd">
+					<p:ajax event="dateSelect" update="@form" immediate="true" />
+				</p:calendar>
+			</p:panelGrid>
+			<p:panelGrid columns="3" id="reportDetails1"
+				rendered="#{WeeklyReportController.date != null}">
+				<p:outputLabel
+					value="Project Name: #{WeeklyReportController.weeklyReport.wrProject.projName}" />
+				<p:outputLabel
+					value="Project ID: #{WeeklyReportController.weeklyReport.wrProject.projID}" />
+				<p:outputLabel value="Week: #{WeeklyReportController.date}" />
+			</p:panelGrid>
+			<p:tabView id="tabView" effect="slide" effectDuration="normal"
+				rendered="#{WeeklyReportController.date != null}">
+				<p:tab title="WP" id="wpTab">
+					<p:panelGrid columns="3" style="width:856px;">
+						<f:facet name="header">
+							<td style="width: 65%; text-align: right;">Current Week</td>
+							<td style="width: 15%; text-align: right;">Current Month</td>
+							<td style="width: 20%; text-align: right;">Project To Date</td>
+						</f:facet>
+					</p:panelGrid>
+					<ui:repeat var="twrWp" value="#{WeeklyReportController.wps}"
+						id="uiRepeat1">
+						<p:outputLabel value="#{twrWp.wpID}" />
+						<br />
+						<p:outputLabel value="#{twrWp.wpName}" />
+						<p:dataTable styleClass="hide-column-names"
+							value="#{WeeklyReportController.weeklyReport.wpMap.get(twrWp)}"
+							var="wwrWp" id="dTWP">
+							<p:column headerText="" style="width: 50%">
+								<h:outputText
+									value="#{wwrWp.wrrEmployee.empFName} #{wwrWp.wrrEmployee.empLName}"
+									rendered="#{wwrWp.wrrEmployee != null}" />
+								<h:outputText value="#{wwrWp.wrrWorkPackage.wpName}"
+									rendered="#{wwrWp.wrrEmployee == null}" />
+							</p:column>
+							<p:column headerText="Current Week" style="width: 15%; text-align: right;">
+								<h:outputText value="#{wwrWp.currentWeek}" />
+							</p:column>
+							<p:column headerText="Current Month" style="width: 15%; text-align: right;">
+								<h:outputText value="#{wwrWp.currentMonth}" />
+							</p:column>
+							<p:column headerText="Project To Date" style="width: 20%; text-align: right;">
+								<h:outputText value="#{wwrWp.wrrTotal}" />
+							</p:column>
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column style="width: 50%; text-align: right;">  
+			             		   		Total  
+			            			</p:column>
+									<p:column style="width: 15%; text-align: right;">
+										<h:outputText
+											value="#{WeeklyReportController.getTotalCurrentWeek(WeeklyReportController.weeklyReport.wpMap.get(twrWp))}" />
+									</p:column>
+									<p:column style="width: 15%; text-align: right;">
+										<h:outputText
+											value="#{WeeklyReportController.getTotalCurrentMonth(WeeklyReportController.weeklyReport.wpMap.get(twrWp))}" />
+									</p:column>
+									<p:column style="width: 15%; text-align: right;">
+										<h:outputText
+											value="#{WeeklyReportController.getTotal(WeeklyReportController.weeklyReport.wpMap.get(twrWp))}" />
+									</p:column>
+								</p:row>
+							</p:columnGroup>
+						</p:dataTable>
+					</ui:repeat>
+				</p:tab>
+				<p:tab title="Employee" id="employeeTab">
+					<p:panelGrid columns="3" style="width:856px;">
+						<f:facet name="header">
+							<td style="width: 65%; text-align: right;">Current Week</td>
+							<td style="width: 15%; text-align: right;">Current Month</td>
+							<td style="width: 20%; text-align: right;">WorkPackage To Date</td>
+						</f:facet>
+					</p:panelGrid>
+					<ui:repeat var="twrEmp" value="#{WeeklyReportController.emps}"
+						id="uiRepeat2">
+						<p:outputLabel value="#{twrEmp.empID}" />
+						<br />
+						<p:outputLabel value="#{twrEmp.empFName} #{twrEmp.empLName}" />
+						<p:dataTable styleClass="hide-column-names"
+							value="#{WeeklyReportController.weeklyReport.empMap.get(twrEmp)}"
+							var="wrrEmp" id="dTEMP">
+							<p:column style="witdh: 50%">
+								<h:outputText
+									value="WorkPackageName: #{wrrEmp.wrrWorkPackage.wpName}" />
+							</p:column>
+							<p:column style="width: 15%; text-align:right">
+								<h:outputText value="#{wrrEmp.currentWeek}" />
+							</p:column>
+							<p:column style="width: 15%; text-align:right">
+								<h:outputText value="#{wrrEmp.currentMonth}" />
+							</p:column>
+							<p:column style="width: 20%; text-align:right">
+								<h:outputText value="#{wrrEmp.wrrTotal}" />
+							</p:column>
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column style="width: 50%; text-align:right">  
+			             		   		Total  
+			            			</p:column>
+									<p:column style="width: 15%; text-align:right">  
+					                	<h:outputText value="#{WeeklyReportController.getTotalCurrentWeek(WeeklyReportController.weeklyReport.empMap.get(twrEmp))}" /> 
+				        		    </p:column>
+									<p:column style="width: 15%; text-align:right">  
+						                <h:outputText value="#{WeeklyReportController.getTotalCurrentMonth(WeeklyReportController.weeklyReport.empMap.get(twrEmp))}" />  
+				        		    </p:column>
+									<p:column style="width: 20%; text-align:right">  
+						                <h:outputText value="#{WeeklyReportController.getTotal(WeeklyReportController.weeklyReport.empMap.get(twrEmp))}" />  
+				        		    </p:column>
+								</p:row>
+							</p:columnGroup>
+						</p:dataTable>
+					</ui:repeat>
+				</p:tab>
+			</p:tabView>
+		</h:form>
+	</ui:define>
+</ui:composition>

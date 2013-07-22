@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.org/schema/arquillian
+        http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+	<!-- Uncomment to have test archives exported to the file system for inspection -->
+	<!-- <engine> -->
+	<!-- <property name="deploymentExportPath">target/</property> -->
+	<!-- </engine> -->
+
+	<!-- Force the use of the Servlet 3.0 protocol with all containers, as it 
+		is the most mature -->
+	<defaultProtocol type="Servlet 3.0" />
+
+	<!-- Example configuration for a remote JBoss AS 7 instance -->
+	<container qualifier="jboss" default="true">
+		<protocol type="jmx-as7">
+			<property name="executionType">REMOTE</property>
+		</protocol>
+		<!-- If you want to use the JBOSS_HOME environment variable, just delete 
+			the jbossHome property -->
+	</container>
+	<extension qualifier="webdriver">
+		<property name="browserCapabilities">${browserCapabilities}</property>
+	</extension>
+
+	<extension qualifier="selenium">
+		<property name="browser">*googlechrome C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</property>
+		<property name="speed">700</property>
+		<property name="timeout">60000</property>
+	</extension>
+
+	<extension qualifier="selenium-server">
+		<property name="dontTouchLogging">true</property>
+		<property name="ensureCleanSession">true</property>
+		<property name="timeoutInSeconds">1000</property>
+	</extension>
+</arquillian>

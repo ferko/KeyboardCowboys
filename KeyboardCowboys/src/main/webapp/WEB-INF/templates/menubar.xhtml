@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- Author: Kelton Kowalchuk -->
+
+<h:head />
+<body>
+	<ui:composition>
+		<!-- Menubar -->
+		<h:form id="navForm">
+			<p:menubar styleClass="topMargin">
+				<p:menuitem value="Home" icon="ui-icon-home" url="index.xhtml" />
+
+				<p:submenu label="Actions" icon="ui-icon-gear">
+
+					<p:menuitem value="Create Employee" icon="ui-icon-plus"
+						url="/pages/createEmployee.xhtml" id="urlCreateEmp"
+						rendered="#{login.isHR()}" />
+
+					<p:menuitem value="Create Project" icon="ui-icon-plus"
+						url="/pages/createProject.xhtml" id="urlCreateProj"
+						rendered="#{login.isHR()}" />
+
+					<p:menuitem value="Create WP" icon="ui-icon-plus"
+						url="/pages/createWorkPackage.xhtml" id="urlCreateWP"
+						rendered="#{login.isManager()}" />
+					<p:menuitem value="Create Budget" icon="ui-icon-plus"
+						url="/pages/resBudget.xhtml" id="urlCreatebudget"
+						rendered="#{login.isEngineer()}" />
+					<p:menuitem value="Create Timesheet" icon="ui-icon-plus"
+						url="/pages/createTimesheet.xhtml" id="urlCreateTime" />
+						
+					<p:menuitem value="Edit Pay Levels" icon="ui-icon-disk"
+						url="/pages/editPayLevel.xhtml" id="urlEditPayLevel"
+						rendered="#{login.isHR()}" />
+
+					<p:menuitem value="View Projects" icon="ui-icon-clipboard"
+						url="/pages/viewProjects.xhtml" id="urlViewProj"
+						rendered="#{login.isManager() || login.isSuperVisor() || login.isHR()}"
+						actionListener="#{ProjectController.projects(null)}" />
+
+					<p:menuitem value="View Status Report" icon="ui-icon-clipboard"
+						rendered="#{login.isEngineer()}"
+						url="/pages/viewStatusReport.xhtml" id="urlViewSR" />
+
+					<p:menuitem value="View Weekly Report" icon="ui-icon-clipboard"
+						rendered="#{login.isManager()}"
+						url="/pages/viewWeeklyReport.xhtml" id="urlViewWR" />
+
+					<p:menuitem value="View Monthly Report" icon="ui-icon-clipboard"
+						rendered="#{login.isManager()}"
+						url="/pages/viewMonthlyReport.xhtml" id="urlViewMR" />
+
+					<p:menuitem value="Assign Employees" icon="ui-icon-disk"
+						url="/pages/assignEmployeeToProject.xhtml" id="urlAssignEmp"
+						rendered="#{login.isSuperVisor()}" />
+
+					<p:menuitem value="Approve TimeSheets" icon="ui-icon-clipboard"
+						rendered="#{login.isApprover()}"
+						url="/pages/approveTimeSheets.xhtml" id="urlViewTSA" />
+
+					<p:menuitem value="View Employees" icon="ui-icon-disk"
+						url="/pages/viewEmployees.xhtml" id="urlViewEmp"
+						rendered="#{login.isHR()}" />
+				</p:submenu>
+				
+				<p:menuitem value="#{login.fullName} |#{login.role}" style="position: relative; left: 35em;"/>
+				
+				<p:menuitem id="btnLogout" style="position: absolute; right: 4px;"
+					value="Logout" action="#{login.logOut()}" icon="ui-icon-close" />
+
+			</p:menubar>
+		</h:form>
+		<!-- /Menubar -->
+	</ui:composition>
+</body>
+</html>

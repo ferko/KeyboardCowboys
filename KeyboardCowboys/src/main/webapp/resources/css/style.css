@@ -1,0 +1,241 @@
+/* Author: Kelton Kowalchuk */
+p.serif {
+	font-family: "Century Gothic", Times, serif;
+	/*letter-spacing: 2px;*/
+}
+
+a.huge {
+	font-size: 60px;
+}
+
+body {
+	text-align: center; left;
+}
+
+.container {
+	width: 900px;
+	height: 550px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: -10px;
+	text-align: left;
+}
+
+.topMargin {
+	margin-top: 15px;
+}
+
+.leftColumn {
+	margin-top: 10px;
+	width: 620px;
+	height: 540px;
+	float: left;
+}
+
+.rightColumn {
+	margin-top: 10px;
+	width: 280px;
+	height: 540px;
+	float: right;
+}
+
+.centerColumn {
+	margin-top: 10px;
+	width: 900px;
+	height: 540px;
+}
+
+.logo {
+	width: 225px;
+}
+
+.ui-widget .ui-widget,.ui-widget {
+	font-size: 13px;
+	font-family: "Century Gothic", Times, serif;
+}
+
+/* Set border for menu 
+.ui-widget-content,.wijmo-wijmenu .ui-widget-content {
+	border: 1px solid gray;
+}*/
+
+/*Remove downward facing triangle from submenus
+.wijmo-wijmenu-link>.ui-icon-triangle-1-s {
+	display: none !important;
+}
+
+.wijmo-wijmenu-horizontal,.wijmo-wijmenu-list {
+	background: red;
+}
+*/
+.ui-menubar,.ui-menu-list,.ui-widget-content,.ui-corner-all,.ui-helper-clearfix,.ui-menu-child,.ui-shadow
+	{
+	mouseover: #ff0000;
+	background-color: white !important;
+	background: red;
+}
+
+.ui-state-hover,.ui-menuitem-active {
+	background-color: white !important;
+}
+
+.login {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10%;
+}
+/*
+.ui-state-active,.ui-widget-content 
+.ui-state-active,.ui-widget-header .ui-state-active {
+	background: lightgrey;
+}
+
+.ui-panelgrid td {
+	border-width: 0px !important;
+}
+*/
+.input-width {
+	width: 99%;
+}
+
+.createEmployee {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.ui-widget-header .ui-inputfield,.ui-widget-content .ui-inputfield {
+	width: 99%;
+}
+
+.messages {
+	margin: 0 auto;
+	width: 30em;
+}
+
+.ui-selectonemenu-item, li.ui-selectonemenu-item {
+	font-size: 13px;
+}
+
+.hide-column-names table thead tr {
+    display: none;
+}
+
+/*	Table CSS
+.tableStyle {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	border: 1px solid #000000;
+	-moz-border-radius-bottomleft: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-webkit-border-bottom-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	-moz-border-radius-topright: 3px;
+	-webkit-border-top-right-radius: 3px;
+	border-top-right-radius: 3px;
+	-moz-border-radius-topleft: 3px;
+	-webkit-border-top-left-radius: 3px;
+	border-top-left-radius: 3px;
+}
+
+.tableStyle table {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.tableStyle thead, tr:last-child td:last-child {
+	-moz-border-radius-bottomright: 3px;
+	-webkit-border-bottom-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+.tableStyle thead, table tr:first-child td:first-child {
+	-moz-border-radius-topleft: 3px;
+	-webkit-border-top-left-radius: 3px;
+	border-top-left-radius: 3px;
+}
+
+.tableStyle thead, table tr:first-child td:last-child {
+	-moz-border-radius-topright: 3px;
+	-webkit-border-top-right-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+.tableStyle tr:last-child td:first-child {
+	-moz-border-radius-bottomleft: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+.tableStyle tr:hover td {
+	background-color: #ffffff;
+}
+
+.tableStyle thead, td {
+	vertical-align: middle;
+	background-color: #ffffff;
+	border: 1px solid #000000;
+	border-width: 0px 1px 1px 0px;
+	text-align: left;
+	padding: 8px;
+	font-size: 10px;
+	font-family: Arial;
+	font-weight: normal;
+	color: #000000;
+}
+
+.tableStyle tr:last-child td {
+	border-width: 0px 1px 0px 0px;
+}
+
+.tableStyle tr td:last-child {
+	border-width: 0px 0px 1px 0px;
+}
+
+.tableStyle tr:last-child td:last-child {
+	border-width: 0px 0px 0px 0px;
+}
+
+.tableStyle thead, tr:first-child td {
+	background: -o-linear-gradient(bottom, #ada9a9 5%, #ada9a9 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ada9a9
+		), color-stop(1, #ada9a9) );
+	background: -moz-linear-gradient(center top, #ada9a9 5%, #ada9a9 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ada9a9",
+		endColorstr="#ada9a9" );
+	background: -o-linear-gradient(top, #ada9a9, ada9a9);
+	background-color: #ada9a9;
+	border: 0px solid #000000;
+	text-align: center;
+	border-width: 0px 0px 1px 1px;
+	font-size: 14px;
+	font-family: Arial;
+	font-weight: bold;
+	color: #ffffff;
+}
+
+.tableStyle thead, tr:first-child:hover td {
+	background: -o-linear-gradient(bottom, #ada9a9 5%, #ada9a9 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ada9a9
+		), color-stop(1, #ada9a9) );
+	background: -moz-linear-gradient(center top, #ada9a9 5%, #ada9a9 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ada9a9",
+		endColorstr="#ada9a9" );
+	background: -o-linear-gradient(top, #ada9a9, ada9a9);
+	background-color: #ada9a9;
+}
+
+.tableStyle thead, tr:first-child td:first-child {
+	border-width: 0px 0px 1px 0px;
+}
+
+.tableStyle thead, tr:first-child td:last-child {
+	border-width: 0px 0px 1px 1px;
+}
+
+/*	End table CSS	*/
+

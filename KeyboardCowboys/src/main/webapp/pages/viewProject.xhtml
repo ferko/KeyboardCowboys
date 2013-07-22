@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- Author: Kelton Kowalchuk -->
+
+<h:head />
+<body>
+	<ui:composition>
+		<p:panelGrid columns="2" styleClass="createEmployee">
+						<f:facet name="header">
+						Project ID:    #{ProjectController.project.projID}
+    				</f:facet>
+
+						<h:outputLabel for="projName" value="Project Name:" />
+						<p:outputLabel id="otProjName"
+							value="#{ProjectController.project.projName}"
+							styleClass="input-width" label="Project Name"
+							rendered="#{!ProjectController.editing}" />
+						<p:inputText id="projName"
+							value="#{ProjectController.project.projName}"
+							styleClass="input-width" label="Project Name"
+							rendered="#{ProjectController.editing}">
+					
+							<f:validator validatorId="projectNameValidator" />
+					
+						</p:inputText>
+
+						<h:outputLabel for="projCostEstimate" value="Cost Estimate:" />
+						<p:outputLabel id="otProjCostEstimate"
+							value="#{ProjectController.project.projCostEstimate}"
+							styleClass="input-width" label="Project Name"
+							rendered="#{!ProjectController.editing}" />
+						<p:inputText id="projCostEstimate"
+							value="#{ProjectController.project.projCostEstimate}"
+							styleClass="input-width" label="Project Name"
+							rendered="#{ProjectController.editing}" >
+					
+							<f:validator validatorId="costEstimateValidator" />
+					
+						</p:inputText>
+
+						<h:outputLabel for="projStartDate" value="Project Start Date:" />
+						<p:calendar value="#{ProjectController.project.projStartDate}"
+							id="projStartDate" styleClass="input-width"
+							disabled="#{!ProjectController.editing}" pattern="dd/MM/yyyy"
+							binding="#{startDateComponent2}"/>
+
+						<h:outputLabel for="projEndDate" value="Project End Date:" />
+						<p:calendar value="#{ProjectController.project.projEndDate}"
+							id="projEndDate" styleClass="input-width"
+							disabled="#{!ProjectController.editing}" pattern="dd/MM/yyyy">
+					
+							<f:attribute name="startDate" value="#{startDateComponent2.value}" />
+   							<f:validator validatorId="projectDateValidator" />
+					
+						</p:calendar>
+
+						<h:outputLabel for="projDescription" value="Project Description:" />
+						<p:inputTextarea id="projDescription"
+							value="#{ProjectController.project.projDescription}"
+							label="Project Description" rows="6" cols="33"
+							disabled="#{!ProjectController.editing}">
+					
+							<f:validator validatorId="projectDescriptionValidator" />
+					
+						</p:inputTextarea>
+
+						<h:outputLabel for="projManager" value="Manager:" />
+						<p:selectOneMenu value="#{ProjectController.project.projManager}"
+							id="projManager" styleClass="input-width"
+							converter="#{CreateProjConverter}"
+							disabled="#{!ProjectController.editing}">
+							<f:selectItem itemLabel="--SELECT ENGINEER--" itemValue="" />
+							<f:selectItems
+								value="#{ProjectController.project.projEmployeesList}" var="en"
+								itemLabel="#{en.empFName} #{en.empLName}" itemValue="#{en}" />
+						</p:selectOneMenu>
+
+						<h:outputLabel for="projAssistant" value="Assistant:" />
+						<p:selectOneMenu
+							value="#{ProjectController.project.projAssistant}"
+							id="projAssistant" styleClass="input-width"
+							converter="#{CreateProjConverter}"
+							disabled="#{!ProjectController.editing}">
+							<f:selectItem itemLabel="--SELECT ENGINEER--" itemValue="" />
+							<f:selectItems
+								value="#{ProjectController.project.projEmployeesList}" var="en"
+								itemLabel="#{en.empFName} #{en.empLName}" itemValue="#{en}" />
+						</p:selectOneMenu>
+
+						<f:facet name="footer">
+							<p:commandButton action="#{ProjectController.mergeProject()}"
+								id="btnUpdateProj" value="Save" icon="ui-icon-plus"
+								style="float: right;" update=":viewProjects:projectDetail"
+								disabled="#{!ProjectController.editing}" rendered="#{login.isSuperVisor() or login.isManager()}"/>
+							
+							<p:commandButton action="#{ProjectController.setEditing(true)}"
+								id="btnEditProj" value="Edit" icon="ui-icon-plus"
+								style="float: right;" update=":viewProjects:projectDetail"
+								disabled="#{ProjectController.editing}" rendered="#{login.isSuperVisor() or login.isManager()}"/>
+							 
+						</f:facet>
+					</p:panelGrid>
+	</ui:composition>
+</body>
+</html>

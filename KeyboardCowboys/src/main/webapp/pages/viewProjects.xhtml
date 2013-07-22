@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<f:event listener="#{ProjectController.displayProjects()}"
+			type="preRenderView" />
+		<h:form id="viewProjects">
+			<p:dataTable id="projTable" var="p" filteredValue="#{ProjectController.filteredProjects}"
+				value="#{ProjectController.projects}" sortBy="#{p.projID}">
+
+				<p:ajax event="rowToggle"
+					listener="#{ProjectController.onRowToggle}" />
+
+				<f:facet name="header">  
+            		View Projects 
+        		</f:facet>
+				<p:column style="width:2%">
+					<p:commandButton icon="ui-icon-search"
+						oncomplete="projectDialog.show()" title="View Detail"
+						update=":viewProjects:projectDetail"
+						action="#{ProjectController.setEditing(false)}" id="btnShowProj">
+						<f:setPropertyActionListener value="#{p}"
+							target="#{ProjectController.project}" />
+					</p:commandButton>
+				</p:column>
+
+
+				<p:column style="width:2%">
+					<p:rowToggler id="btnRowToggle" />
+				</p:column>
+
+				<p:column style="width:22.5%" sortBy="#{p.projID}" filterBy="#{p.projID}">
+					<f:facet name="header">  
+                    	Project ID
+                    </f:facet>
+					<h:outputText value="#{p.projID}" />
+				</p:column>
+
+				<p:column style="width:24.5%" sortBy="#{p.projName}" filterBy="#{p.projName}">
+					<f:facet name="header">  
+                    	Project Name
+                    </f:facet>
+					<h:outputText value="#{p.projName}" />
+				</p:column>
+
+				<p:column style="width:24.5%" sortBy="#{p.projStartDate}" filterBy="#{p.projStartDate}">
+					<f:facet name="header">  
+                    	Start Date
+                    </f:facet>
+					<h:outputText value="#{p.projStartDate}" />
+				</p:column>
+
+				<p:column style="width:24.5%" sortBy="#{p.projEndDate}" filterBy="#{p.projEndDate}">
+					<f:facet name="header">  
+                    	End Date
+                    </f:facet>
+					<h:outputText value="#{p.projEndDate}" />
+				</p:column>
+
+				<p:rowExpansion>
+					<p:dataTable var="q" value="#{p}" id="dtProj2">
+						<p:column headerText="Employees" style="width:179px">
+							<p:dataList type="none" paginator="true" rows="4" 
+								paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}" 
+								value="#{p.projEmployeesList}" var="e"
+								rendered="#{not empty p.projEmployeesList}">
+								<p:column>
+									<h:outputText id="lblEmpFLName" value="#{e.empFName} #{e.empLName}" />
+									<br />
+								</p:column>
+							</p:dataList>
+						</p:column>
+						<p:column headerText="Work Packages" style="width:179px">
+							<p:dataTable value="#{p.workPackagesList}" var="w" id="dtWP"
+								rendered="#{not empty p.workPackagesList}" sortBy="#{w.wpName}"
+								scrollable="true" scrollHeight="110">
+								
+								<p:column>
+									<p:commandButton icon="ui-icon-search"
+										oncomplete="wpDialog.show()" title="View Detail"
+										update=":viewProjects:wpDetail"
+										action="#{WorkPackageController.setEditing(false)}"
+										id="btnShowWP" rendered="#{login.manager}">
+										<f:setPropertyActionListener value="#{w}"
+											target="#{WorkPackageController.selectedWorkPackage}" />
+									</p:commandButton>
+									<h:outputText id="lblWpName" value="#{w.wpName}" />
+								</p:column>
+								 
+							</p:dataTable>
+						</p:column>
+						<p:column headerText="Project Manager" style="width:125px">
+							<h:outputText id="lblProjMangName"
+								value="#{p.projManager.empFName} #{p.projManager.empLName}" />
+						</p:column>
+
+						<p:column headerText="Estimate" style="width:70px">
+							<h:outputText id="lblProjCost" value="#{p.projCostEstimate}" />
+						</p:column>
+
+						<p:column headerText="Assistant" style="width:99px">
+							<h:outputText id="lblProjAssist"
+								value="#{p.projAssistant.empFName} #{p.projAssistant.empLName}" />
+						</p:column>
+
+						<p:column headerText="Status" style="width:63px">
+							<h:outputText id="lblProjStat" value="#{p.projStatus}" />
+						</p:column>
+
+						<p:column headerText="Description" style="width:179px">
+							<h:outputText id="lblProjDesc" value="#{p.projDescription}" />
+						</p:column>
+					</p:dataTable>
+					<!--  
+					<h:panelGrid id="display" columns="2" cellpadding="4">
+						<h:outputText value="Employees: " />
+						<p:selectOneListbox>
+							<f:selectItems value="#{p.projEmployees}" var="pro1"
+								itemLabel="#{pro1.empName}" itemValue="#{pro1.empID}" />
+						</p:selectOneListbox>
+
+						<h:outputText value="Work Packages: " />
+						<p:dataTable value="#{ProjectController.projects}" var="pro2">
+							<p:column>
+								<h:outputText value="#{pro2.projWorkPackages}" />
+							</p:column>
+						</p:dataTable>
+
+						<h:outputText value="Project Manger: " />
+						<h:outputText value="#{p.projManager}" />
+
+						<h:outputText value="Cost Estimate: " />
+						<h:outputText value="#{p.projCostEstimate}" />
+
+						<h:outputText value="Assistant Employee: " />
+						<h:outputText value="#{p.projAssistant}" />
+
+						<h:outputText value="Status: " />
+						<h:outputText value="#{p.projStatus}" />
+
+						<h:outputText value="Description: " />
+						<h:outputText value="#{p.projDescription}" />
+					</h:panelGrid>
+					-->
+				</p:rowExpansion>
+			</p:dataTable>
+
+			<p:dialog header="Project Details" modal="true" showEffect="fade"
+				widgetVar="projectDialog" draggable="true" position="center top"
+				resizable="true">
+				<p:ajax event="close"
+					listener="#{ProjectController.setEditing(false)}"
+					update="projectDetail" />
+				<p:outputPanel id="projectDetail" style="text-align:center;"
+					layout="block">
+					<ui:include src="/pages/viewProject.xhtml" />
+				</p:outputPanel>
+			</p:dialog>
+
+			<p:dialog header="Work Package Details" modal="true"
+				showEffect="fade" widgetVar="wpDialog" id="unique" draggable="true"
+				position="center top" resizable="true" >
+				<p:ajax event="close"
+					listener="#{WorkPackageController.setEditing(false)}"
+					update="wpDetail" />
+				<p:outputPanel id="wpDetail" style="text-align:center;"
+					layout="block" >
+					<ui:include src="/pages/viewWorkPackage.xhtml" />
+				</p:outputPanel>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

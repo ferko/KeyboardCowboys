@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="leftColumnContent">
+		<f:event listener="#{SupervisorController.startConversation()}"
+			type="preRenderView" />
+		<h:form id="formAssignEmp" prependID="false">
+			<p:panelGrid columns="2" styleClass="createEmployee">
+				<f:facet name="header">
+						Assign Employee To Project
+    				</f:facet>
+				<p:column>
+					<h:outputLabel for="aetpEmployee" value="Unassigned Employees:" />
+					<p:message id="msgAetpEmp" for="aetpEmployee" />
+				</p:column>
+				<p:selectOneMenu value="#{SupervisorController.employee}"
+					id="aetpEmployee" styleClass="input-width"
+					converter="#{SupervisorEmployeeConverter}">
+					<f:selectItem itemLabel="--SELECT EMPLOYEE--" itemValue="" />
+					<f:selectItems value="#{SupervisorController.employees}" var="emp"
+						itemLabel="#{emp.empFName} #{emp.empLName}" itemValue="#{emp}" />
+					<f:ajax render="@form" immediate="true" />
+				</p:selectOneMenu>
+
+				<p:column rendered="#{not empty SupervisorController.employee}">
+					<h:outputLabel for="aetpProj" value="Project:" />
+					<p:message for="aetpProj" id="msgAetpProj"
+						rendered="#{not empty SupervisorController.project}" />
+				</p:column>
+				<p:selectOneMenu value="#{SupervisorController.project}"
+					id="aetpProj" styleClass="input-width"
+					rendered="#{not empty SupervisorController.employee}"
+					converter="#{SupervisorConverter}">
+					<f:selectItem itemLabel="--SELECT PROJECT--" itemValue="" />
+					<f:selectItems value="#{SupervisorController.projects}" var="projs"
+						itemLabel="#{projs.projName} #{projs.projID}" itemValue="#{projs}" />
+					<f:ajax render="@form" immediate="true" />
+				</p:selectOneMenu>
+
+				<f:facet name="footer">
+					<p:commandButton action="#{SupervisorController.saveEmployee()}"
+						id="btnSaveEmp" value="Save" icon="ui-icon-disk"
+						style="float: right;" update="@all"
+						rendered="#{!SupervisorController.submitted and not empty SupervisorController.employee}"
+						disabled="#{empty SupervisorController.project}" />
+				</f:facet>
+			</p:panelGrid>
+			<p:message for="formAssignEmp" id="msgResult" />
+		</h:form>
+	</ui:define>
+</ui:composition>

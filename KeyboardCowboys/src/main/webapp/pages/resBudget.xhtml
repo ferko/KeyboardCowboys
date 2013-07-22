@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+	<ui:define name="centerColumnContent">
+		<f:event listener="#{ResBudget.startConversation()}"
+			type="preRenderView" />
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:selectOneMenu value="#{ResBudget.wp}" id="wpProj"
+					styleClass="input-width" converter="#{ResConverter}">
+					<f:selectItem itemLabel="--SELECT WORK PACKAGE--" itemValue="" />
+					<f:selectItems value="#{ResBudget.wps}" var="wps"
+						itemLabel="#{wps.wpName} #{wps.wpID}" itemValue="#{wps}" />
+					<f:ajax render=":budgetForm" immediate="true" />
+				</p:selectOneMenu>
+			</p:panelGrid>
+		</h:form>
+		<h:form id="budgetForm">
+		<p:panelGrid columns="1">
+			<p:dataTable var="budgets" value="#{ResBudget.wp.resBudget}"
+				id="wpBudgetTable" editable="true" styleClass="ui-menubar"
+				rendered="#{not empty ResBudget.wp}">
+				<p:column headerText="Pay Level">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{budgets.payLevel.plLevel}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{budgets.payLevel.plLevel}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Days">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{budgets.days}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{budgets.days}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column style="width:6%;">
+					<p:rowEditor />
+				</p:column>
+			</p:dataTable>
+			<f:facet name="footer">
+				<p:row>
+					<p:column colspan="1" rendered="#{not empty ResBudget.wp}">
+						<p:commandButton action="#{ResBudget.saveBudget()}" value="Create"
+							id="btnSaveWP" icon="ui-icon-plus" style="float: right;"
+							update="@form" rendered="#{!ResBudget.submitted}" />
+					</p:column>
+				</p:row>
+			</f:facet>
+		</p:panelGrid>
+		<p:messages />
+		</h:form>
+	</ui:define>
+</ui:composition>

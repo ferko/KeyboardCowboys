@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<!-- Put event listener here -->
+		<h:form id="formViewMonthlyRpt">
+			<f:event listener="#{MonthlyReportController.startConversation()}"
+				type="preRenderView" />
+			<p:panelGrid id="selectWPGrid" columns="2">
+				<p:outputLabel value="Work Package:" />
+				<p:selectOneMenu value="#{MonthlyReportController.project}"
+					id="mrProj" styleClass="input-width" converter="#{MRConverter}"
+					immediate="true">
+					<f:ajax immediate="true" event="change" render="@form" />
+					<f:selectItem itemLabel="--SELECT PROJECT--" itemValue="" />
+					<f:selectItems value="#{MonthlyReportController.projects}"
+						var="project" itemLabel="#{project.projName} #{project.projID}"
+						itemValue="#{project}" />
+				</p:selectOneMenu>
+				<p:outputLabel value="Date:"
+					rendered="#{MonthlyReportController.project != null}" />
+				<p:calendar value="#{MonthlyReportController.month}"
+					rendered="#{MonthlyReportController.project != null}"
+					id="calMRDate" styleClass="input-width">
+					<p:ajax event="dateSelect" update="@form" immediate="true" />
+				</p:calendar>
+			</p:panelGrid>
+			<br />
+			<p:panelGrid id="projectInfo" columns="2"
+				rendered="#{MonthlyReportController.month != null}">
+				<p:outputLabel value="Project Name: " />
+				<p:outputLabel value="#{MonthlyReportController.project.projName}" />
+				<p:outputLabel value="Project ID: " />
+				<p:outputLabel value="#{MonthlyReportController.project.projID}" />
+				<p:outputLabel value="Project Manager: " />
+				<p:outputLabel
+					value="#{MonthlyReportController.project.projManager.empFName} #{MonthlyReportController.project.projManager.empLName}" />
+				<p:outputLabel value="Date Issued: " />
+				<p:outputLabel value="#{MonthlyReportController.month}" />
+			</p:panelGrid>
+			<p:panelGrid id="montlyReport" columns="1"
+				rendered="#{MonthlyReportController.month != null}">
+				<p:dataTable var="wpID" value="#{MonthlyReportController.wps}"
+					id="projectsDetails" styleClass="ui-menubar">
+
+					<p:column headerText="WP ID">
+						<h:outputText value="#{wpID}" />
+					</p:column>
+
+					<p:column headerText="WP Name">
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).workPackage.wpName}" />
+					</p:column>
+
+					<p:column headerText="STATS">
+						<h:outputText value="PERSON DAY" />
+						<br />
+						<h:outputText value="LABOUR $" />
+					</p:column>
+
+					<p:column headerText="WP BUDGET">
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).workPackage.totalBudgetDays}" />
+						<br />
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).workPackage.totalBudgetDollers}" />
+					</p:column>
+
+					<p:column headerText="ENGINEER PLANNED">
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).workPackage.totalResBudgetDays}" />
+						<br />
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).workPackage.totalResBudgetDollers}" />
+					</p:column>
+
+					<p:column headerText="ACWP">
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).totalTimeSheetSubmission}" />
+						<br />
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).totalAC}" />
+					</p:column>
+
+					<p:column headerText="ETC">
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).totalEst}" />
+						<br />
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).totalEstDollers}" />
+					</p:column>
+
+					<p:column headerText="EAC">
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).totalEstAct}" />
+						<br />
+						<h:outputText
+							value="#{MonthlyReportController.monthlyReports.get(wpID).totalEstActDol}" />
+					</p:column>
+
+					<p:column headerText="% VARIANCE">
+						<h:outputText value="#{MonthlyReportController.monthlyReports.get(wpID).variance}" />
+						<br />
+						<h:outputText value="#{MonthlyReportController.monthlyReports.get(wpID).varianceDol}" />
+					</p:column>
+
+					<p:column headerText="% COMPLETION">
+						<h:outputText value="#{MonthlyReportController.monthlyReports.get(wpID).completion}" />
+					</p:column>
+				</p:dataTable>
+			</p:panelGrid>
+			<p:messages />
+		</h:form>
+	</ui:define>
+</ui:composition>

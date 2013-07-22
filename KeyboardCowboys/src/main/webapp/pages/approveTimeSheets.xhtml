@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<h:form id="formApproveTS">
+		<f:event listener="#{TimeSheetApprovalController.startConversation()}"
+			type="preRenderView" />
+			<p:dataTable id="tsaTable" var="tsa"
+				value="#{TimeSheetApprovalController.timeSheetApprovals}"
+				sortBy="#{tsa.timeSheet.tsWeekEnding}">
+
+				<f:facet name="header">  
+            		Time Sheets 
+        		</f:facet>
+
+				<p:column style="width:22.5%">
+					<f:facet name="header">  
+                    	TimeSheet Date
+                    </f:facet>
+					<h:outputText value="#{tsa.timeSheet.tsWeekEnding}" />
+				</p:column>
+
+				<p:column style="width:24.5%">
+					<f:facet name="header">  
+                    	TimeSheet ID
+                    </f:facet>
+					<h:outputText value="#{tsa.timeSheet.tsID}" />
+				</p:column>
+
+				<p:column style="width:24.5%">
+					<f:facet name="header">  
+                    	Employee Name
+                    </f:facet>
+					<h:outputText value="#{tsa.timeSheet.tsEmp.empFName} #{tsa.timeSheet.tsEmp.empLName}" />
+				</p:column>
+				<p:column>
+					<p:commandButton icon="ui-icon-search"
+						oncomplete="tsDialog.show()" title="View Detail"
+						update=":formApproveTS:tsDetail" id="btnTS">
+						<f:setPropertyActionListener value="#{tsa}"
+							target="#{TimeSheetApprovalController.timeSheetApproval}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<p:dialog header="Work Package Details" modal="true"
+				showEffect="fade" widgetVar="tsDialog" id="dialogTS" draggable="false"
+				position="center top" resizable="false">
+				<p:ajax event="close"
+					update="tsDetail" />
+				<p:outputPanel id="tsDetail" style="text-align:center;"
+					layout="block"> 
+						<ui:include src="/pages/viewTimeSheet.xhtml" />
+				</p:outputPanel>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/template2.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Author: Kelton Kowalchuk -->
+
+	<ui:define name="centerColumnContent">
+		<h:form id="viewEmployees">
+			<f:event listener="#{EmployeeController.displayEmployees()}"
+				type="preRenderView" />
+
+			<p:dataTable id="employeesTable" var="e"
+				filteredValue="#{EmployeeController.filteredEmployees}"
+				value="#{EmployeeController.employees}" sortBy="#{e.empID}">
+				<p:column exportable="false">
+					<p:commandButton icon="ui-icon-search"
+						oncomplete="employeeDialog.show()" title="View Detail"
+						update=":viewEmployees:employeeDetail"
+						action="#{EmployeeController.setEditing(false)}" id="btnShowEmp">
+						<f:setPropertyActionListener value="#{e}"
+							target="#{EmployeeController.selectedEmployee}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Employee ID" sortBy="#{e.empID}"
+					filterBy="#{e.empID}">
+					<p:outputLabel value="#{e.empID}" />
+				</p:column>
+				<p:column headerText="Employee UserName" sortBy="#{e.empUserName}"
+					filterBy="#{e.empUserName}">
+					<p:outputLabel value="#{e.empUserName}" />
+				</p:column>
+				<p:column headerText="Employee Name"
+					sortBy="#{e.empFName} #{e.empLName}"
+					filterBy="#{e.empFName} #{e.empLName}">
+					<p:outputLabel value="#{e.empFName} #{e.empLName}" />
+				</p:column>
+			</p:dataTable>
+			<p:dialog header="Employee Details" modal="true" showEffect="fade"
+				widgetVar="employeeDialog" id="employeeDia" draggable="false"
+				position="center top" resizable="false">
+				<p:ajax event="close"
+					listener="#{EmployeeController.setEditing(false)}"
+					update="employeeDetail" />
+				<p:outputPanel id="employeeDetail" style="text-align:center;"
+					layout="block">
+					<p:panelGrid columns="2" styleClass="createEmployee">
+						<f:facet name="header">
+								Employee ID:    #{EmployeeController.employee.empID}
+		    				</f:facet>
+						<p:outputLabel value="Employee first name:" />
+						<p:outputLabel value="#{EmployeeController.employee.empFName}"
+							rendered="#{!EmployeeController.editing}" />
+						<p:inputText value="#{EmployeeController.employee.empFName}"
+							rendered="#{EmployeeController.editing}">
+
+							<f:validator validatorId="employeeFirstNameValidator" />
+
+						</p:inputText>
+						<p:outputLabel value="Employee last name:" />
+						<p:outputLabel value="#{EmployeeController.employee.empLName}"
+							rendered="#{!EmployeeController.editing}" />
+						<p:inputText value="#{EmployeeController.employee.empLName}"
+							rendered="#{EmployeeController.editing}">
+
+							<f:validator validatorId="employeeLastNameValidator" />
+
+						</p:inputText>
+						<p:outputLabel value="Employee UserName:" />
+						<p:outputLabel value="#{EmployeeController.employee.empUserName}"
+							id="lblEmpUserName" rendered="#{!EmployeeController.editing}" />
+						<p:inputText value="#{EmployeeController.employee.empUserName}"
+							rendered="#{EmployeeController.editing}">
+
+							<f:validator validatorId="employeeUserNameValidator" />
+
+						</p:inputText>
+
+						<h:outputLabel for="empPassword" value="Password:"
+							rendered="#{EmployeeController.editing}" />
+						<p:password id="empPassword"
+							value="#{EmployeeController.principle.empPassword}"
+							match="empPasswordMatch" rendered="#{EmployeeController.editing}"
+							label="Password 1" feedback="true"
+							validatorMessage="Passwords do not match!" redisplay="true" />
+
+
+						<h:outputLabel for="empPasswordMatch" value="Retype Password:"
+							rendered="#{EmployeeController.editing}" />
+						<p:password id="empPasswordMatch"
+							value="#{EmployeeController.principle.empPassword}"
+							label="Password 2" rendered="#{EmployeeController.editing}"
+							feedback="true" redisplay="true" />
+
+						<h:outputLabel id="lblSuperVisor" for="empSuperVisor"
+							value="SuperVisor:" rendered="#{EmployeeController.editing}" />
+						<p:selectOneMenu
+							value="#{EmployeeController.employee.empSuperVisor}"
+							id="empSuperVisor" rendered="#{EmployeeController.editing}"
+							converter="#{EmployeeSuperConverter}">
+							<f:selectItem itemLabel="--SELECT SUPERVISOR--" itemValue="" />
+							<f:selectItems value="#{EmployeeController.superVisors}" var="en"
+								itemLabel="#{en.empFName} #{en.empLName}" itemValue="#{en}" />
+						</p:selectOneMenu>
+
+						<h:outputLabel id="lblTimeSheetApprover"
+							for="empTimeSheetApprover" value="TimeSheetApprover:"
+							rendered="#{EmployeeController.editing}" />
+						<p:selectOneMenu value="#{EmployeeController.employee.tsApprover}"
+							id="empTimeSheetApprover"
+							rendered="#{EmployeeController.editing}"
+							converter="#{EmployeeSuperConverter}">
+							<f:selectItem itemLabel="--SELECT SUPERVISOR--" itemValue="" />
+							<f:selectItems value="#{EmployeeController.superVisors}" var="en"
+								itemLabel="#{en.empFName} #{en.empLName}" itemValue="#{en}" />
+						</p:selectOneMenu>
+
+						<h:outputLabel for="empPLevel" value="Pay Level:"
+							rendered="#{EmployeeController.editing}" />
+						<p:selectOneMenu
+							value="#{EmployeeController.employee.empPayInfo.epiPayLevel}"
+							id="empPLevel" rendered="#{EmployeeController.editing}"
+							converter="#{PayLevelConverter}">
+							<f:selectItem itemLabel="--SELECT PAY LEVEL--" itemValue="" />
+							<f:selectItems value="#{EmployeeController.payLevels}" var="pl"
+								itemLabel="#{pl.plLevel}" itemValue="#{pl}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Employee Role:" />
+						<p:outputLabel id="lblEmpRole"
+							value="#{EmployeeController.employee.empRole}"
+							rendered="#{!EmployeeController.editing}" />
+						<p:selectOneRadio id="empRole"
+							rendered="#{EmployeeController.editing}"
+							value="#{EmployeeController.employee.empRole}">
+							<f:selectItem itemLabel="Active" itemValue="USER" />
+							<f:selectItem itemLabel="Not Active" itemValue="" />
+							<f:selectItem itemLabel="SUPERVISOR" itemValue="SUPERVISOR" />
+							<f:selectItem itemLabel="HR" itemValue="HR" />
+						</p:selectOneRadio>
+						<f:facet name="footer">
+							<p:messages />
+							<p:commandButton action="#{EmployeeController.updateEmployee()}"
+								id="btnSaveWP" value="Save" icon="ui-icon-plus"
+								update=":viewEmployees:employeeDetail" style="float: right;"
+								disabled="#{!EmployeeController.editing}" />
+							<p:commandButton action="#{EmployeeController.setEditing(true)}"
+								value="Edit" id="btnEditWP" icon="ui-icon-plus"
+								update=":viewEmployees:employeeDetail" style="float: right;"
+								disabled="#{EmployeeController.editing}" />
+						</f:facet>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
